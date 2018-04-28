@@ -87,7 +87,7 @@ main(int argc, const char **argv)
 
 	init_dialog(stdin, stdout);
 	if (!sade_mode)
-		dialog_vars.backtitle = __DECONST(char *, "pfSense Installer");
+		dialog_vars.backtitle = __DECONST(char *, "Kontrol Installer");
 	dialog_vars.item_help = TRUE;
 	nscroll = i = 0;
 
@@ -111,7 +111,7 @@ main(int argc, const char **argv)
 			return (error);
 		}
 	} else {
-		prompt = "Create partitions for pfSense. No changes will be "
+		prompt = "Create partitions for Kontrol. No changes will be "
 		    "made until you select Finish.";
 	}
 
@@ -129,7 +129,7 @@ main(int argc, const char **argv)
 			    "installation menu.", 0, 0, TRUE);
 			break;
 		}
-			
+
 		get_mount_points(items, nitems);
 
 		if (i >= nitems)
@@ -204,7 +204,7 @@ main(int argc, const char **argv)
 		geom_deletetree(&mesh);
 		free(items);
 	}
-	
+
 	if (prompt == NULL) {
 		error = geom_gettree(&mesh);
 		if (validate_setup()) {
@@ -227,7 +227,7 @@ get_part_metadata(const char *name, int create)
 {
 	struct partition_metadata *md;
 
-	TAILQ_FOREACH(md, &part_metadata, metadata) 
+	TAILQ_FOREACH(md, &part_metadata, metadata)
 		if (md->name != NULL && strcmp(md->name, name) == 0)
 			break;
 
@@ -239,7 +239,7 @@ get_part_metadata(const char *name, int create)
 
 	return (md);
 }
-	
+
 void
 delete_part_metadata(const char *name)
 {
@@ -281,20 +281,20 @@ validate_setup(void)
 
 	if (root == NULL) {
 		dialog_msgbox("Error", "No root partition was found. "
-		    "The root pfSense partition must have a mountpoint of '/'.",
+		    "The root Kontrol partition must have a mountpoint of '/'.",
 		0, 0, TRUE);
 		return (FALSE);
 	}
 
 	/*
-	 * Check for root partitions that we aren't formatting, which is 
+	 * Check for root partitions that we aren't formatting, which is
 	 * usually a mistake
 	 */
 	if (root->newfs == NULL && !sade_mode) {
 		dialog_vars.defaultno = TRUE;
 		cancel = dialog_yesno("Warning", "The chosen root partition "
 		    "has a preexisting filesystem. If it contains an existing "
-		    "pfSense system, please update it "
+		    "Kontrol system, please update it "
 		    "instead of installing a new system on it. The partition "
 		    "can also be erased by pressing \"No\" and then deleting "
 		    "and recreating it. Are you sure you want to proceed?",
@@ -345,7 +345,7 @@ apply_changes(struct gmesh *mesh)
 	items[i*2 + 1] = "3";
 	i++;
 
-	if (getenv("BSDINSTALL_LOG") == NULL) 
+	if (getenv("BSDINSTALL_LOG") == NULL)
 		setenv("BSDINSTALL_LOG", "/dev/null", 1);
 
 	TAILQ_FOREACH(md, &part_metadata, metadata) {
@@ -444,14 +444,14 @@ read_geom_mesh(struct gmesh *mesh, int *nitems)
 	/*
 	 * Build the device table. First add all disks (and CDs).
 	 */
-	
+
 	LIST_FOREACH(classp, &mesh->lg_class, lg_class) {
 		if (strcmp(classp->lg_name, "DISK") != 0 &&
 		    strcmp(classp->lg_name, "MD") != 0)
 			continue;
 
 		/* Now recurse into all children */
-		LIST_FOREACH(gp, &classp->lg_geom, lg_geom) 
+		LIST_FOREACH(gp, &classp->lg_geom, lg_geom)
 			add_geom_children(gp, 0, &items, nitems);
 	}
 
@@ -474,7 +474,7 @@ add_geom_children(struct ggeom *gp, int recurse, struct partedit_item **items,
 		}
 	}
 
-	if (LIST_EMPTY(&gp->lg_provider)) 
+	if (LIST_EMPTY(&gp->lg_provider))
 		return;
 
 	LIST_FOREACH(pp, &gp->lg_provider, lg_provider) {
@@ -543,7 +543,7 @@ init_fstab_metadata(void)
 		md->fstab->fs_passno = fstab->fs_passno;
 
 		md->newfs = NULL;
-		
+
 		TAILQ_INSERT_TAIL(&part_metadata, md, metadata);
 	}
 }
@@ -553,7 +553,7 @@ get_mount_points(struct partedit_item *items, int nitems)
 {
 	struct partition_metadata *md;
 	int i;
-	
+
 	for (i = 0; i < nitems; i++) {
 		TAILQ_FOREACH(md, &part_metadata, metadata) {
 			if (md->name != NULL && md->fstab != NULL &&
