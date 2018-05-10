@@ -2593,8 +2593,10 @@ pmap_pinit_type(pmap_t pmap, enum pmap_type pm_type, int flags)
 		pmap->pm_cr3 = pml4phys;
 		pmap_pinit_pml4(pml4pg);
 		if (pti) {
-			pml4pgu = vm_page_alloc(NULL, 0, VM_ALLOC_NORMAL |
-			    VM_ALLOC_NOOBJ | VM_ALLOC_WIRED | VM_ALLOC_WAITOK);
+			while ((pml4pgu = vm_page_alloc(NULL, 0,
+			    VM_ALLOC_NORMAL | VM_ALLOC_NOOBJ | VM_ALLOC_WIRED))
+			    == NULL)
+			       VM_WAIT;
 			pmap->pm_pml4u = (pml4_entry_t *)PHYS_TO_DMAP(
 			    VM_PAGE_TO_PHYS(pml4pgu));
 			pmap_pinit_pml4_pti(pml4pgu);
@@ -7561,6 +7563,9 @@ pmap_pti_init(void)
 		pmap_pti_add_kva_locked(va - PAGE_SIZE, va, false);
 		/* MC# stack IST 3 */
 		va = common_tss[i].tss_ist3 + sizeof(struct nmi_pcpu);
+		pmap_pti_add_kva_locked(va - PAGE_SIZE, va, false);
+		/* DB# stack IST 4 */
+		va = common_tss[i].tss_ist4 + sizeof(struct nmi_pcpu);
 		pmap_pti_add_kva_locked(va - PAGE_SIZE, va, false);
 	}
 	pmap_pti_add_kva_locked((vm_offset_t)kernphys + KERNBASE,
