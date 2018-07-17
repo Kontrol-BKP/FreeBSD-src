@@ -167,7 +167,7 @@ boot_disk(struct gmesh *mesh)
 
 	if (n > 1) {
 		err = dlg_menu("Partitioning",
-		    "Select the disk on which to install pfSense.", 0, 0, 0,
+		    "Select the disk on which to install Kontrol.", 0, 0, 0,
 		    n, disks, &selected, NULL);
 
 		chosen = (err == 0) ? strdup(disks[selected].name) : NULL;
@@ -249,7 +249,7 @@ query:
 		dialog_vars.defaultno = TRUE;
 
 	snprintf(message, sizeof(message), "Would you like to use this entire "
-	    "disk (%s) for pfSense or partition it to share it with other "
+	    "disk (%s) for Kontrol or partition it to share it with other "
 	    "operating systems? Using the entire disk will erase any data "
 	    "currently stored there.", disk);
 	choice = dialog_yesno("Partition", message, 0, 0);
@@ -264,7 +264,7 @@ query:
 
 		sprintf(warning, "The existing partition scheme on this "
 		    "disk (%s) is not bootable on this platform. To install "
-		    "pfSense, it must be repartitioned. This will destroy all "
+		    "Kontrol, it must be repartitioned. This will destroy all "
 		    "data on the disk. Are you sure you want to proceed?",
 		    scheme);
 		subchoice = dialog_yesno("Non-bootable Disk", warning, 0, 0);
@@ -348,7 +348,7 @@ wizard_makeparts(struct gmesh *mesh, const char *disk, const char *fstype,
 		humanize_number(neededstr, 7, MIN_FREE_SPACE, "B", HN_AUTOSCALE,
 		    HN_DECIMAL);
 		sprintf(message, "There is not enough free space on %s to "
-		    "install pfSense (%s free, %s required). Would you like "
+		    "install Kontrol (%s free, %s required). Would you like "
 		    "to choose another disk or to open the partition editor?",
 		    disk, availablestr, neededstr);
 
